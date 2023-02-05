@@ -12,7 +12,8 @@
         "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update",
         "build-prod-patch": "npm version patch --force && node ./replace.build.js && ng build --prod --aot=false",
         "build-prod-minor": "npm version minor --force && node ./replace.build.js && ng build --prod --aot=false",
-        "build-prod-major": "npm version major --force && node ./replace.build.js && ng build --prod --aot=false"
+        "build-prod-major": "npm version major --force && node ./replace.build.js && ng build --prod --aot=false",
+        "explore-source-maps": "ng build --source-map=true && npx source-map-explorer dist/**/*.js"
     },
     "private": true,
     "dependencies": {
