@@ -3,7 +3,7 @@ import { throwError as observableThrowError, Observable, BehaviorSubject } from 
 
 import { take, filter, catchError, switchMap, finalize, retry } from 'rxjs/operators';
 import { Injectable, Injector } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpErrorResponse } from '@angular/common/http';
+import { HttpEvent, HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 
 import { AuthService } from './auth.service';
 import { LoggerService } from '../../shared/services/logger.service';
@@ -51,11 +51,11 @@ export class RequestInterceptorService implements HttpInterceptor {
                 }
 
                 if (error instanceof HttpErrorResponse) {
-                    switch ((<HttpErrorResponse>error).status) {
-                        case 400:
-                            return this.handle400Error(error);
-                        case 401:
-                            return this.handle401Error(req, next);
+                    switch (error.status) {
+                        case HttpStatusCode.BadRequest:
+                            return this.handleBadRequestError(error);
+                        case HttpStatusCode.Unauthorized:
+                            return this.handleUnauthError(req, next);
                         default:
                             return observableThrowError(error);
                     }
@@ -65,16 +65,16 @@ export class RequestInterceptorService implements HttpInterceptor {
             }));
     }
 
-    handle400Error(error) {
-        if (error && error.status === 400 && error.error && error.error.error === 'invalid_grant') {
-            // If we get a 400 and the error message is 'invalid_grant', the token is no longer valid so logout.
+    private handleBadRequestError(error: HttpErrorResponse) {
+        if (error?.error?.error === 'invalid_grant') {
+            // If the error message is 'invalid_grant', the token is no longer valid so logout.
             return this.logoutUser();
         }
 
         return observableThrowError(error);
     }
 
-    handle401Error(req: HttpRequest<any>, next: HttpHandler) {
+    private handleUnauthError(req: HttpRequest<any>, next: HttpHandler) {
         const authService = this.injector.get(AuthService);
 
         if (!this.isRefreshingToken) {
@@ -113,7 +113,7 @@ export class RequestInterceptorService implements HttpInterceptor {
         }
     }
 
-    logoutUser() {
+    private logoutUser() {
         const authService = this.injector.get(AuthService);
         // Route to the login page (implementation up to you)
         authService.doLogout();
