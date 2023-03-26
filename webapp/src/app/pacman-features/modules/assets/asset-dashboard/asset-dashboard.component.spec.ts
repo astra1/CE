@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -14,7 +14,7 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
@@ -43,54 +43,55 @@ import { UtilsService } from 'src/app/shared/services/utils.service';
 import { AssetDashboardComponent } from './asset-dashboard.component';
 
 describe('AssetDashboardComponent', () => {
-  let component: AssetDashboardComponent;
-  let fixture: ComponentFixture<AssetDashboardComponent>;
+    let component: AssetDashboardComponent;
+    let fixture: ComponentFixture<AssetDashboardComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
-        MatCardModule,
-        MatMenuModule,
-        MatSelectModule,
-        NoopAnimationsModule,
-        RouterTestingModule,
-      ],
-      declarations: [
-        AssetDashboardComponent,
-        DateSelection,
-        DropdownComponent,
-        TextComponent,
-        TextWithIconComponent,
-        CustomCardComponent,
-        OverviewTileComponent,
-      ],
-      providers: [
-        AssetGroupObservableService,
-        AssetTilesService,
-        AwsResourceTypeSelectionService,
-        CommonResponseService,
-        DataCacheService,
-        DomainTypeObservableService,
-        ErrorHandlingService,
-        HttpService,
-        LoggerService,
-        RefactorFieldsService,
-        RouterUtilityService,
-        UtilsService,
-        WorkflowService,
-      ],
-    }).compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                FormsModule,
+                ReactiveFormsModule,
+                HttpClientTestingModule,
+                MatCardModule,
+                MatMenuModule,
+                MatSelectModule,
+                NoopAnimationsModule,
+                RouterTestingModule,
+            ],
+            declarations: [
+                AssetDashboardComponent,
+                DateSelection,
+                DropdownComponent,
+                TextComponent,
+                TextWithIconComponent,
+                CustomCardComponent,
+                OverviewTileComponent,
+            ],
+            providers: [
+                AssetGroupObservableService,
+                AssetTilesService,
+                AwsResourceTypeSelectionService,
+                CommonResponseService,
+                DataCacheService,
+                DomainTypeObservableService,
+                ErrorHandlingService,
+                HttpService,
+                LoggerService,
+                RefactorFieldsService,
+                RouterUtilityService,
+                UtilsService,
+                WorkflowService,
+            ],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AssetDashboardComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AssetDashboardComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

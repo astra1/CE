@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -56,67 +56,97 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 describe('PostLoginAppComponent', () => {
-  let component: PostLoginAppComponent;
-  let fixture: ComponentFixture<PostLoginAppComponent>;
+    let component: PostLoginAppComponent;
+    let fixture: ComponentFixture<PostLoginAppComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSnackBarModule,
-        MatSidenavModule,
-        NoopAnimationsModule,
-        RouterTestingModule,
-        TreeModule,
-      ],
-      declarations: [
-        AssetSwitcherComponent,
-        ContextualMenuComponent,
-        DefaultAssetGroupComponent,
-        HeaderComponent,
-        PostLoginAppComponent,
-        ToastNotificationComponent,
-      ],
-      providers: [
-        AdalService,
-        AssetGroupObservableService,
-        AssetTilesService,
-        AuthService,
-        AuthSessionStorageService,
-        AwsResourceTypeSelectionService,
-        CommonResponseService,
-        DataCacheService,
-        DownloadService,
-        DomainTypeObservableService,
-        ErrorHandlingService,
-        HttpService,
-        LoggerService,
-        MainRoutingAnimationEventService,
-        OnPremAuthenticationService,
-        PermissionGuardService,
-        RecentlyViewedObservableService,
-        RefactorFieldsService,
-        RouterUtilityService,
-        SharedToasObservableService,
-        ToastObservableService,
-        TokenResolverService,
-        ThemeObservableService,
-        UtilsService,
-        WindowExpansionService,
-        WorkflowService,
-      ],
-    }).compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule,
+                MatFormFieldModule,
+                MatInputModule,
+                MatSnackBarModule,
+                MatSidenavModule,
+                NoopAnimationsModule,
+                RouterTestingModule,
+                TreeModule,
+            ],
+            declarations: [
+                AssetSwitcherComponent,
+                ContextualMenuComponent,
+                DefaultAssetGroupComponent,
+                HeaderComponent,
+                PostLoginAppComponent,
+                ToastNotificationComponent,
+            ],
+            providers: [
+                AdalService,
+                AssetGroupObservableService,
+                AssetTilesService,
+                AuthService,
+                AuthSessionStorageService,
+                AwsResourceTypeSelectionService,
+                CommonResponseService,
+                {
+                    provide: DataCacheService,
+                    useValue: {
+                        isAdminCapability() {
+                            return false;
+                        },
+                        getRoleCapabilities() {
+                            return '';
+                        },
+                        getCurrentSelectedAssetGroup() {
+                            return 'ag';
+                        },
+                        setCurrentSelectedAssetGroup() {
+                            return;
+                        },
+                        getUserDetails() {
+                            return {
+                                getUserId() {
+                                    return '1234';
+                                },
+                            };
+                        },
+                        getUserDetailsValue() {
+                            return {
+                                getUserId() {
+                                    return '1234';
+                                },
+                            };
+                        },
+                    },
+                },
+                DownloadService,
+                DomainTypeObservableService,
+                ErrorHandlingService,
+                HttpService,
+                LoggerService,
+                MainRoutingAnimationEventService,
+                OnPremAuthenticationService,
+                PermissionGuardService,
+                RecentlyViewedObservableService,
+                RefactorFieldsService,
+                RouterUtilityService,
+                SharedToasObservableService,
+                ToastObservableService,
+                TokenResolverService,
+                ThemeObservableService,
+                UtilsService,
+                WindowExpansionService,
+                WorkflowService,
+            ],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PostLoginAppComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(PostLoginAppComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
