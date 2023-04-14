@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -14,126 +14,211 @@
 
 <div class="asset-details-wrapper flex flex-between">
     <div class="floating-widgets-section flex flex-col">
-        <div *ngIf="backButtonRequired" class="breadcrumb-container" style="padding: 18px;">
-            <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray"
-                [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+        <div *ngIf="backButtonRequired" class="breadcrumb-container" style="padding: 18px">
+            <app-breadcrumb
+                [breadcrumbLinks]="breadcrumbLinks"
+                [breadcrumbArray]="breadcrumbArray"
+                [breadcrumbPresent]="breadcrumbPresent"
+            ></app-breadcrumb>
         </div>
         <div class="floating-widgets-header flex flex-align-center assets-header">
             <!-- <img *ngIf="backButtonRequired" class="arrow-img" (click)="navigateBack()" style="height: 1.4em;"
                 src="../assets/icons/left-arrow.svg"> -->
-            <h6 class="title-text">Asset Details </h6>
-            <div class="header-description" title="{{resourceType}}/{{decodedResourceId}}">
-                ({{resourceType}}/{{decodedResourceId}})</div>
+            <h6 class="title-text">Asset Details</h6>
+            <div class="header-description" title="{{ resourceType }}/{{ decodedResourceId }}">
+                ({{ resourceType }}/{{ decodedResourceId }})
+            </div>
         </div>
-        <div class="floating-widgets-container" style="overflow: unset;">
+        <div class="floating-widgets-container" style="overflow: unset">
             <section>
-                <ul class='adjust-padding'>
+                <ul class="adjust-padding">
                     <li class="widget-wrapper">
                         <div class="widget">
-                            <app-pacman-policy-violations *ngIf="resourceId" [breadcrumbPresent]="breadcrumbPresent" [resourceId]='resourceId' [resourceType]='resourceType'
-                                [pageLevel]="pageLevel"></app-pacman-policy-violations>
+                            <app-pacman-policy-violations
+                                *ngIf="resourceId"
+                                [breadcrumbPresent]="breadcrumbPresent"
+                                [resourceId]="resourceId"
+                                [resourceType]="resourceType"
+                                [pageLevel]="pageLevel"
+                            ></app-pacman-policy-violations>
                         </div>
                     </li>
-                    <li class="widget-wrapper flex" *ngIf='!policyValue || !hostValue'>
+                    <li class="widget-wrapper flex" *ngIf="!policyValue || !hostValue">
                         <div class="widget half-widget" *ngIf="!policyValue">
-                            <div class="header">
+                            <div class="header flex flex-between">
                                 <app-title-burger-head [subHeadTitle]="'Policy Violation Summary'">
                                 </app-title-burger-head>
+                                <app-asset-summary
+                                    *ngIf="assetSummaryData"
+                                    [overallCompliance]="assetSummaryData"
+                                ></app-asset-summary>
                             </div>
                             <div class="graph-chart-cont relative" id="statsDoughnut">
-                                <app-doughnut-chart *ngIf='policyAvailable[0]' [chartContId]="'statsDoughnut'"
-                                    [graphData]="policyData" [graphWidth]="widgetWidth" [flexTrue]="true"
-                                    [graphHeight]="widgetHeight" [MainTextcolor]='MainTextcolor'
-                                    [innerRadius]='innerRadius' [outerRadius]='outerRadius' [strokeColor]="strokeColor"
-                                    (navigatePage)="navigateDataTable($event)">
+                                <app-doughnut-chart
+                                    *ngIf="policyAvailable[0]"
+                                    [chartContId]="'statsDoughnut'"
+                                    [graphData]="policyData"
+                                    [graphWidth]="widgetWidth"
+                                    [flexTrue]="true"
+                                    [graphHeight]="widgetHeight"
+                                    [MainTextcolor]="MainTextcolor"
+                                    [innerRadius]="innerRadius"
+                                    [outerRadius]="outerRadius"
+                                    [strokeColor]="strokeColor"
+                                    (navigatePage)="navigateDataTable($event)"
+                                >
                                 </app-doughnut-chart>
                             </div>
                             <div class="error_msg">
-                                <app-error-message *ngIf='summary.violation == true'
-                                    [selectedValue]="'violationMessage'"></app-error-message>
+                                <app-error-message
+                                    *ngIf="summary.violation == true"
+                                    [selectedValue]="'violationMessage'"
+                                ></app-error-message>
                             </div>
                             <div class="loader" *ngIf="!showLoader[0]"></div>
-
                         </div>
                         <div class="widget half-widget" *ngIf="!hostValue">
                             <div class="header">
-                                <app-title-burger-head [subHeadTitle]="'Host Vulnerability Summary'">
+                                <app-title-burger-head
+                                    [subHeadTitle]="'Host Vulnerability Summary'"
+                                >
                                 </app-title-burger-head>
                             </div>
                             <div class="graph-chart-cont relative" id="statsDoughnuttwo">
-                                <app-doughnut-chart *ngIf='policyAvailable[1]' [chartContId]="'statsDoughnuttwo'"
-                                    [graphData]="hostData" [graphWidth]="widgetWidth" [flexTrue]="true"
-                                    [graphHeight]="widgetHeight" [MainTextcolor]='MainTextcolor'
-                                    [innerRadius]='innerRadius' [outerRadius]='outerRadius' [strokeColor]="strokeColor"
-                                    (navigatePage)="navigateToVulnerabilitiesList($event)">
+                                <app-doughnut-chart
+                                    *ngIf="policyAvailable[1]"
+                                    [chartContId]="'statsDoughnuttwo'"
+                                    [graphData]="hostData"
+                                    [graphWidth]="widgetWidth"
+                                    [flexTrue]="true"
+                                    [graphHeight]="widgetHeight"
+                                    [MainTextcolor]="MainTextcolor"
+                                    [innerRadius]="innerRadius"
+                                    [outerRadius]="outerRadius"
+                                    [strokeColor]="strokeColor"
+                                    (navigatePage)="navigateToVulnerabilitiesList($event)"
+                                >
                                 </app-doughnut-chart>
                             </div>
                             <div class="error_msg">
-                                <app-error-message *ngIf='summary.vulnerabilities == true'
-                                    [selectedValue]="'vulnerabilitiesMessage'"></app-error-message>
+                                <app-error-message
+                                    *ngIf="summary.vulnerabilities == true"
+                                    [selectedValue]="'vulnerabilitiesMessage'"
+                                ></app-error-message>
                             </div>
                             <div class="loader" *ngIf="!showLoader[1]"></div>
-
                         </div>
                     </li>
-                    <li class="widget-wrapper" *ngIf='!hideHostVulnerabilities'>
+                    <li class="widget-wrapper" *ngIf="!hideHostVulnerabilities">
                         <div class="widget">
-                            <app-host-vulnerabilities (errorOccured)='hideHostVulnerabilities = true'
-                                [resourceId]='resourceId'></app-host-vulnerabilities>
+                            <app-host-vulnerabilities
+                                (errorOccured)="hideHostVulnerabilities = true"
+                                [resourceId]="resourceId"
+                            ></app-host-vulnerabilities>
                         </div>
                     </li>
-                    <li class="widget-wrapper" *ngIf='!showCpuData'>
+                    <li class="widget-wrapper" *ngIf="!showCpuData">
                         <div class="widget">
                             <div class="header">
-                                <app-title-burger-head [subHeadTitle]="'CPU Utilization'"></app-title-burger-head>
+                                <app-title-burger-head
+                                    [subHeadTitle]="'CPU Utilization'"
+                                ></app-title-burger-head>
                             </div>
                             <div class="common-wrapper" id="cpuUtilization" #widgetCpu>
-                                <app-multiline-chart *ngIf='policyAvailable[2]' [colorSetLegends]="'true'"
-                                    [yCoordinates]="5" [hover]="true" [colorSet]="colorSetCpu"
-                                    [graphWidth]="widgetWidth2" [graphHeight]="widgetHeight2" [smoothEdge]="false"
-                                    [xAxisValues]="true" [axisUnit]="'false'" [yAxisLabel]="'Utilization %'"
-                                    [dataResponse]="cpuData" [translate]="true" [multipleData]="false" [fullArea]="true"
-                                    [verticalLines]="true" [translateChange]='true' [idUnique]="'cpuUtilization'">
+                                <app-multiline-chart
+                                    *ngIf="policyAvailable[2]"
+                                    [colorSetLegends]="'true'"
+                                    [yCoordinates]="5"
+                                    [hover]="true"
+                                    [colorSet]="colorSetCpu"
+                                    [graphWidth]="widgetWidth2"
+                                    [graphHeight]="widgetHeight2"
+                                    [smoothEdge]="false"
+                                    [xAxisValues]="true"
+                                    [axisUnit]="'false'"
+                                    [yAxisLabel]="'Utilization %'"
+                                    [dataResponse]="cpuData"
+                                    [translate]="true"
+                                    [multipleData]="false"
+                                    [fullArea]="true"
+                                    [verticalLines]="true"
+                                    [translateChange]="true"
+                                    [idUnique]="'cpuUtilization'"
+                                >
                                 </app-multiline-chart>
-                                <ul *ngIf='policyAvailable[2]' class="flex flex-row flex-center legends-wrapper">
-                                    <li *ngFor="let line of cpuData; let i = index;"
-                                        class="flex flex-row flex-align-center">
-                                        <div class="legend-color" [ngStyle]="{'background-color': colorSetCpu[i]}">
+                                <ul
+                                    *ngIf="policyAvailable[2]"
+                                    class="flex flex-row flex-center legends-wrapper"
+                                >
+                                    <li
+                                        *ngFor="let line of cpuData; let i = index"
+                                        class="flex flex-row flex-align-center"
+                                    >
+                                        <div
+                                            class="legend-color"
+                                            [ngStyle]="{ 'background-color': colorSetCpu[i] }"
+                                        ></div>
+                                        <div
+                                            class="flex flex-col flex-center legend-text capitalize"
+                                        >
+                                            {{ line.values[0].keys[i] }}
                                         </div>
-                                        <div class="flex flex-col flex-center legend-text capitalize">
-                                            {{line.values[0].keys[i]}}</div>
                                     </li>
                                 </ul>
                             </div>
                             <div class="loader" *ngIf="!showLoader[2]"></div>
                         </div>
                     </li>
-                    <li class="widget-wrapper" *ngIf='diskData'>
+                    <li class="widget-wrapper" *ngIf="diskData">
                         <div class="widget">
                             <div class="header">
-                                <app-title-burger-head [subHeadTitle]="'Disk Utilization'"></app-title-burger-head>
+                                <app-title-burger-head
+                                    [subHeadTitle]="'Disk Utilization'"
+                                ></app-title-burger-head>
                             </div>
                             <div class="disk-container-wrapper flex-around">
-                                <ul *ngIf='policyAvailable[3]' class="flex flex-start disk-container-ul">
-                                    <li class="graph-chart-cont relative padding-wrapper"
-                                        *ngFor="let data of diskData ; let i = index " id="d3{{i}}">
-                                        <app-doughnut-chart [chartContId]="'d3'+i" [graphData]="data"
-                                            [graphWidth]="widgetWidth1" [flexTrue]="true" [graphHeight]="widgetHeight1"
-                                            [MainTextcolor]='MainTextcolor' [innerRadius]='innerRadius1'
-                                            [outerRadius]='outerRadius1' [strokeColor]="strokeColor">
+                                <ul
+                                    *ngIf="policyAvailable[3]"
+                                    class="flex flex-start disk-container-ul"
+                                >
+                                    <li
+                                        class="graph-chart-cont relative padding-wrapper"
+                                        *ngFor="let data of diskData; let i = index"
+                                        id="d3{{ i }}"
+                                    >
+                                        <app-doughnut-chart
+                                            [chartContId]="'d3' + i"
+                                            [graphData]="data"
+                                            [graphWidth]="widgetWidth1"
+                                            [flexTrue]="true"
+                                            [graphHeight]="widgetHeight1"
+                                            [MainTextcolor]="MainTextcolor"
+                                            [innerRadius]="innerRadius1"
+                                            [outerRadius]="outerRadius1"
+                                            [strokeColor]="strokeColor"
+                                        >
                                         </app-doughnut-chart>
                                         <div class="donutDetails">
-                                            <div class="environmentName nowrap-ellipsis" title="{{data.name}}">
-                                                {{data.name}}
+                                            <div
+                                                class="environmentName nowrap-ellipsis"
+                                                title="{{ data.name }}"
+                                            >
+                                                {{ data.name }}
                                             </div>
                                             <div class="details">
                                                 <div class="enclosure flex flex-between">
-                                                    <div class="text nowrap-ellipsis">Used Space</div>
-                                                    <div class="value size">{{data.size}}</div>
+                                                    <div class="text nowrap-ellipsis">
+                                                        Used Space
+                                                    </div>
+                                                    <div class="value size">{{ data.size }}</div>
                                                 </div>
                                                 <div class="enclosure flex flex-between">
-                                                    <div class="text nowrap-ellipsis">Available Space</div>
-                                                    <div class="value space allign-wrapper">{{data.free}}</div>
+                                                    <div class="text nowrap-ellipsis">
+                                                        Available Space
+                                                    </div>
+                                                    <div class="value space allign-wrapper">
+                                                        {{ data.free }}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -146,34 +231,47 @@
                     <li class="widget-wrapper" *ngIf="filteredData == true">
                         <div class="widget">
                             <div class="header">
-                                <app-title-burger-head [subHeadTitle]="'Attributes'"></app-title-burger-head>
+                                <app-title-burger-head
+                                    [subHeadTitle]="'Attributes'"
+                                ></app-title-burger-head>
                             </div>
                             <div class="attribute-wrapper">
-                                <app-attribute [pageLevel]="pageLevel" [dataObj]='genericAttributes'></app-attribute>
+                                <app-attribute
+                                    [pageLevel]="pageLevel"
+                                    [dataObj]="genericAttributes"
+                                ></app-attribute>
                             </div>
                         </div>
                     </li>
                     <li class="widget-wrapper flex" *ngIf="!hideContainer[7]">
                         <div class="widget half-widget">
                             <div class="header">
-                                <app-title-burger-head [subHeadTitle]="'Access Groups'"></app-title-burger-head>
+                                <app-title-burger-head
+                                    [subHeadTitle]="'Access Groups'"
+                                ></app-title-burger-head>
                             </div>
                             <div class="attribute-wrapper">
-                                <app-access-groups [resource]='accessGroupData'></app-access-groups>
+                                <app-access-groups [resource]="accessGroupData"></app-access-groups>
                                 <div class="loader" *ngIf="!showLoader[11]"></div>
                             </div>
                         </div>
                     </li>
-                    <li class="widget-wrapper" *ngIf='!hideOpenPorts'>
+                    <li class="widget-wrapper" *ngIf="!hideOpenPorts">
                         <div class="widget">
-                            <app-open-ports (errorOccured)='hideOpenPorts = true' [resourceId]='resourceId'
-                                [resourceType]='resourceType'></app-open-ports>
+                            <app-open-ports
+                                (errorOccured)="hideOpenPorts = true"
+                                [resourceId]="resourceId"
+                                [resourceType]="resourceType"
+                            ></app-open-ports>
                         </div>
                     </li>
-                    <li class="widget-wrapper" *ngIf='!installedSoftwares'>
+                    <li class="widget-wrapper" *ngIf="!installedSoftwares">
                         <div class="widget">
-                            <app-installed-softwares (errorOccured)='installedSoftwares = true'
-                                [resourceId]='resourceId' [resourceType]='resourceType'></app-installed-softwares>
+                            <app-installed-softwares
+                                (errorOccured)="installedSoftwares = true"
+                                [resourceId]="resourceId"
+                                [resourceType]="resourceType"
+                            ></app-installed-softwares>
                         </div>
                     </li>
                 </ul>
@@ -182,12 +280,11 @@
     </div>
     <div class="fixed-widgets-section">
         <div class="assets-issues-container">
-            <article class="asset-summary" *ngIf='!hideContainer[0]'>
+            <article class="asset-summary" *ngIf="!hideContainer[0]">
                 <div class="sub-head">
                     <app-title-burger-head [subHeadTitle]="'Asset Summary'"></app-title-burger-head>
                 </div>
                 <div class="asset-container">
-                    <app-asset-summary *ngIf='assetSummaryData' [dataArray]='assetSummaryData'></app-asset-summary>
                     <div class="loader" *ngIf="!showLoader[4]"></div>
                 </div>
             </article>
@@ -209,45 +306,60 @@
                     <div class="loader" *ngIf="!showLoader[10]"></div>
                 </div>
             </article>
-            <article class="notifications-wrapper" *ngIf='!hideContainer[1]'>
+            <article class="notifications-wrapper" *ngIf="!hideContainer[1]">
                 <div class="sub-head">
-                    <app-title-burger-head [subHeadTitle]="'AWS Notifications'"></app-title-burger-head>
+                    <app-title-burger-head
+                        [subHeadTitle]="'AWS Notifications'"
+                    ></app-title-burger-head>
                 </div>
                 <div class="notifications-details flex flex-between flex-wrap">
-                    <div class="status flex flex-align-center" *ngIf='awsDetailsData'
-                        [ngClass]="{'link-text underline-link-num': awsDetailsData[0].count >0}"
-                        (click)="awsDetailsData[0].count > 0  && navigateToAWSNotifications('open')">
+                    <div
+                        class="status flex flex-align-center"
+                        *ngIf="awsDetailsData"
+                        [ngClass]="{ 'link-text underline-link-num': awsDetailsData[0].count > 0 }"
+                        (click)="awsDetailsData[0].count > 0 && navigateToAWSNotifications('open')"
+                    >
                         <div class="statusSymbol open"></div>
-                        <span class="status-text">{{awsDetailsData[0].status}}</span>
-                        <div class="statusValue">{{awsDetailsData[0].count}}</div>
+                        <span class="status-text">{{ awsDetailsData[0].status }}</span>
+                        <div class="statusValue">{{ awsDetailsData[0].count }}</div>
                     </div>
-                    <div class="status flex flex-align-center" *ngIf='awsDetailsData'
-                        [ngClass]="{'link-text underline-link-num': awsDetailsData[1].count >0}"
-                        (click)="awsDetailsData[1].count > 0  && navigateToAWSNotifications('closed')">
+                    <div
+                        class="status flex flex-align-center"
+                        *ngIf="awsDetailsData"
+                        [ngClass]="{ 'link-text underline-link-num': awsDetailsData[1].count > 0 }"
+                        (click)="
+                            awsDetailsData[1].count > 0 && navigateToAWSNotifications('closed')
+                        "
+                    >
                         <div class="statusSymbol closed"></div>
-                        <span class="status-text">{{awsDetailsData[1].status}}</span>
-                        <div class="statusValue">{{awsDetailsData[1].count}}</div>
+                        <span class="status-text">{{ awsDetailsData[1].status }}</span>
+                        <div class="statusValue">{{ awsDetailsData[1].count }}</div>
                     </div>
-                    <div class="status flex flex-align-center" *ngIf='awsDetailsData'
-                        [ngClass]="{'link-text underline-link-num': awsDetailsData[2].count >0}"
-                        (click)="awsDetailsData[2].count > 0  && navigateToAWSNotifications('upcoming')">
+                    <div
+                        class="status flex flex-align-center"
+                        *ngIf="awsDetailsData"
+                        [ngClass]="{ 'link-text underline-link-num': awsDetailsData[2].count > 0 }"
+                        (click)="
+                            awsDetailsData[2].count > 0 && navigateToAWSNotifications('upcoming')
+                        "
+                    >
                         <div class="statusSymbol scheduled"></div>
-                        <span class="status-text">{{awsDetailsData[2].status}}</span>
-                        <div class="statusValue">{{awsDetailsData[2].count}}</div>
+                        <span class="status-text">{{ awsDetailsData[2].status }}</span>
+                        <div class="statusValue">{{ awsDetailsData[2].count }}</div>
                     </div>
                     <div class="loader" *ngIf="!showLoader[5]"></div>
                 </div>
             </article>
-            <article class="metaData-wrapper" *ngIf='!hideContainer[2]'>
+            <article class="metaData-wrapper" *ngIf="!hideContainer[2]">
                 <div class="sub-head">
                     <app-title-burger-head [subHeadTitle]="'Created By'"></app-title-burger-head>
                 </div>
                 <div class="metaData-content">
-                    <app-asset-contents [resource]='dataObj.Creators'></app-asset-contents>
+                    <app-asset-contents [resource]="dataObj.Creators"></app-asset-contents>
                     <div class="loader" *ngIf="!showLoader[6]"></div>
                 </div>
             </article>
-            <article class="metaData-wrapper" *ngIf='!hideContainer[3]'>
+            <article class="metaData-wrapper" *ngIf="!hideContainer[3]">
                 <div class="sub-head">
                     <app-title-burger-head [subHeadTitle]="'AWS Metadata'"></app-title-burger-head>
                 </div>
@@ -256,12 +368,12 @@
                     <div class="loader" *ngIf="!showLoader[7]"></div>
                 </div>
             </article>
-            <article class="metaData-wrapper" *ngIf='!hideContainer[4]'>
+            <article class="metaData-wrapper" *ngIf="!hideContainer[4]">
                 <div class="sub-head">
                     <app-title-burger-head [subHeadTitle]="'Tags'"></app-title-burger-head>
                 </div>
                 <div class="tags">
-                    <app-filter-info *ngIf='tagsVariable' [tags]='tagsArray'></app-filter-info>
+                    <app-filter-info *ngIf="tagsVariable" [tags]="tagsArray"></app-filter-info>
                     <div class="loader" *ngIf="!showLoader[8]"></div>
                 </div>
             </article>
@@ -271,71 +383,119 @@
                 </div>
                 <div class="actions-wrappers add-margin" *ngIf="showOppositeEmail">
                     <header class="recommend-flip flex-between flex flex-align-center">
-                        <div class="header-text">
-                            + Send Email
-                        </div>
+                        <div class="header-text">+ Send Email</div>
                         <div class="delete-img" (click)="sendEmail()">
-                            <img style="height: 1.5em;" src="../assets/icons/x-icon.svg">
+                            <img style="height: 1.5em" src="../assets/icons/x-icon.svg" />
                         </div>
                     </header>
                     <section class="text-wrapper" *ngIf="!showTransactionEmail">
-                        <form novalidate [formGroup]="userEmail" (keydown.enter)="$event.preventDefault()">
+                        <form
+                            novalidate
+                            [formGroup]="userEmail"
+                            (keydown.enter)="$event.preventDefault()"
+                        >
                             <label>
                                 <div class="text-wrapper-header">To</div>
                                 <ul class="input-wrapper">
-                                    <li class="list-inputs flex flex-align-center"
-                                        *ngFor="let data of emailArray;let i = index">
-                                        {{data}}<img class="crossmark-icon" (click)='removeData(i)'
-                                            src="../assets/icons/x-icon.svg">
+                                    <li
+                                        class="list-inputs flex flex-align-center"
+                                        *ngFor="let data of emailArray; let i = index"
+                                    >
+                                        {{ data }}
+                                        <img
+                                            class="crossmark-icon"
+                                            (click)="removeData(i)"
+                                            src="../assets/icons/x-icon.svg"
+                                        />
                                     </li>
-                                    <input type="text" placeholder="Enter User's Email" [(ngModel)]='queryValue'
-                                        (keyup)=filter() class="inputarea-container" formControlName="ename"
-                                        (keydown)="keyDown($event)">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter User's Email"
+                                        [(ngModel)]="queryValue"
+                                        (keyup)="filter()"
+                                        class="inputarea-container"
+                                        formControlName="ename"
+                                        (keydown)="keyDown($event)"
+                                    />
                                 </ul>
                             </label>
                             <div class="suggestion-wrapper">
                                 <div class="suggestions" *ngIf="filteredList.length > 0">
                                     <ul class="suggestion-list">
-                                        <li class="lists-suggestion" *ngFor="let item of filteredList; let i = index "
-                                            [class.active]="i == arrowkeyLocation" (click)="select(item)"
-                                            (keydown)="keyEvent($event, item)">
-                                            <a>{{item}}</a>
+                                        <li
+                                            class="lists-suggestion"
+                                            *ngFor="let item of filteredList; let i = index"
+                                            [class.active]="i == arrowkeyLocation"
+                                            (click)="select(item)"
+                                            (keydown)="keyEvent($event, item)"
+                                        >
+                                            <a>{{ item }}</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="error-reason" *ngIf="!invalid">
-                                Email is required
-                            </div>
+                            <div class="error-reason" *ngIf="!invalid">Email is required</div>
                             <div class="textarea-button">
-                                <button class="button-textarea" type="button" (click)='onSubmitemail()'>SEND
+                                <button
+                                    class="button-textarea"
+                                    type="button"
+                                    (click)="onSubmitemail()"
+                                >
+                                    SEND
                                 </button>
                             </div>
                         </form>
                     </section>
                     <div class="circle-container" *ngIf="showTransactionEmail">
-                        <div class="circle-loader" [class.load-complete-success]='showLoadcompleteEmail && checkEmail'
-                            [class.load-complete-failure]='showLoadcompleteEmail && !checkEmail'>
-                            <div *ngIf='checkEmail' class="checkmark draw"
-                                [class.checkmark-show]='showLoadcompleteEmail'></div>
-                            <div *ngIf='!checkEmail' class="crossmark draw"
-                                [class.crossmark-show]='showLoadcompleteEmail'></div>
+                        <div
+                            class="circle-loader"
+                            [class.load-complete-success]="showLoadcompleteEmail && checkEmail"
+                            [class.load-complete-failure]="showLoadcompleteEmail && !checkEmail"
+                        >
+                            <div
+                                *ngIf="checkEmail"
+                                class="checkmark draw"
+                                [class.checkmark-show]="showLoadcompleteEmail"
+                            ></div>
+                            <div
+                                *ngIf="!checkEmail"
+                                class="crossmark draw"
+                                [class.crossmark-show]="showLoadcompleteEmail"
+                            ></div>
                         </div>
                     </div>
-                    <div class="error_msg_email" *ngIf='showLoadcompleteEmail && !checkEmail'>Email not sent
+                    <div class="error_msg_email" *ngIf="showLoadcompleteEmail && !checkEmail">
+                        Email not sent
                     </div>
-                    <div class="success_msg_email" *ngIf='showLoadcompleteEmail && checkEmail'>Email sent successfully
+                    <div class="success_msg_email" *ngIf="showLoadcompleteEmail && checkEmail">
+                        Email sent successfully
                     </div>
-                    <div class='border-bottom'></div>
+                    <div class="border-bottom"></div>
                 </div>
-                <div class='buttons-wrapper'>
-                    <div class='flex flex-col flex-center button-parent'
-                        *ngIf="showEmail && this.configurations && this.configurations.optional.assetDetails.ASSET_DETAILS_FROM_ID && this.configurations.optional.assetDetails.ASSET_DETAILS_TEMPLATE_URL && !showOppositeEmail">
-                        <app-button-icon (onClickInner)="sendEmail()" [iconSrc]="'../assets/icons/email.svg'">Email
+                <div class="buttons-wrapper">
+                    <div
+                        class="flex flex-col flex-center button-parent"
+                        *ngIf="
+                            showEmail &&
+                            this.configurations &&
+                            this.configurations.optional.assetDetails.ASSET_DETAILS_FROM_ID &&
+                            this.configurations.optional.assetDetails.ASSET_DETAILS_TEMPLATE_URL &&
+                            !showOppositeEmail
+                        "
+                    >
+                        <app-button-icon
+                            (onClickInner)="sendEmail()"
+                            [iconSrc]="'../assets/icons/email.svg'"
+                            >Email
                         </app-button-icon>
                     </div>
-                    <div class='flex flex-col flex-center button-parent' *ngIf="resourceType == 'ec2'">
-                        <app-button-icon [disabled]='buttonDisable == false'>Start/Stop Server</app-button-icon>
+                    <div
+                        class="flex flex-col flex-center button-parent"
+                        *ngIf="resourceType == 'ec2'"
+                    >
+                        <app-button-icon [disabled]="buttonDisable == false">
+                            Start/Stop Server
+                        </app-button-icon>
                     </div>
                 </div>
             </article>
