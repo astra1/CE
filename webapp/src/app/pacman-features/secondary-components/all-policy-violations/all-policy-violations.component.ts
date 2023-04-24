@@ -14,7 +14,7 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { AssetGroupObservableService } from 'src/app/core/services/asset-group-observable.service';
 import { DomainTypeObservableService } from 'src/app/core/services/domain-type-observable.service';
 import { TableStateService } from 'src/app/core/services/table-state.service';
@@ -39,7 +39,6 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
     @Input() pageLevel = 0;
     @Input() ruleID: any;
 
-    outerArr: any;
     allColumns: any;
 
     whitelistColumns: string[];
@@ -49,10 +48,7 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
     apiData: any;
     applicationValue: any;
     errorMessage: any;
-    dataComing = true;
-    showLoader = true;
     tableHeaderData: any;
-    seekdata = false;
     durationParams: any;
     autoRefresh: boolean;
     totalRows = 0;
@@ -60,17 +56,15 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
     popRows: any = ['Download Data'];
     dataTableData: any = [];
     tableDataLoaded = false;
-    currentBucket: any = [];
     paginatorSize = 10;
-    firstPaginator = 1;
-    lastPaginator: number;
-    currentPointer = 0;
     searchTxt = '';
     errorValue = 0;
     showGenericMessage = false;
-    pageTitle = 'List of Violations';
+    pageTitle = 'Policy Violations';
     headerColName;
     direction;
+
+    onScrollDataLoaded = new Subject<any[]>();
 
     private subscriptionToAssetGroup: Subscription;
     private domainSubscription: Subscription;
@@ -82,6 +76,8 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
         Severity: 1,
         Category: 1,
     };
+    tableScrollTop: number;
+    tableData: any[];
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -149,17 +145,10 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
 
     updateComponent() {
         /* All functions variables which are required to be set for component to be reloaded should go here */
-        this.outerArr = [];
+        this.tableData = [];
         this.searchTxt = '';
-        this.currentBucket = [];
-        // this.bucketNumber = 0;
-        this.firstPaginator = 1;
-        // this.currentPointer = 0;
         this.dataTableData = [];
         this.tableDataLoaded = false;
-        this.showLoader = true;
-        this.dataComing = false;
-        this.seekdata = false;
         this.errorValue = 0;
         this.showGenericMessage = false;
         this.getData();
@@ -204,70 +193,65 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
         }
     }
 
-    getAllPatchingDetails() {
-        /* comment ends here */
-        if (this.ruleID !== undefined) {
-            const payload = {
-                ag: this.selectedAssetGroup,
-                filter: { 'policyId.keyword': this.ruleID, domain: this.selectedDomain },
-                from: this.bucketNumber * this.paginatorSize,
-                searchtext: this.searchTxt,
-                size: this.paginatorSize,
-            };
-            this.errorValue = 0;
-            const policyViolationUrl = environment.policyViolation.url;
-            const policyViolationMethod = environment.policyViolation.method;
-
-            if (this.dataSubscription) {
-                this.dataSubscription.unsubscribe();
-            }
-
-            this.dataSubscription = this.commonResponseService
-                .getData(policyViolationUrl, policyViolationMethod, payload, {})
-                .subscribe(
-                    (response) => {
-                        this.showGenericMessage = false;
-                        try {
-                            this.errorValue = 1;
-                            this.tableDataLoaded = true;
-                            this.showLoader = false;
-                            this.seekdata = false;
-                            this.dataTableData = response.data.response;
-                            this.dataComing = true;
-                            this.totalRows = response.data.total;
-                            this.firstPaginator = this.bucketNumber * this.paginatorSize + 1;
-                            this.lastPaginator =
-                                this.bucketNumber * this.paginatorSize + this.paginatorSize;
-
-                            this.currentPointer = this.bucketNumber;
-
-                            if (this.lastPaginator > this.totalRows) {
-                                this.lastPaginator = this.totalRows;
-                            }
-                            const updatedResponse = this.massageData(response.data.response);
-                            this.currentBucket[this.bucketNumber] = updatedResponse;
-                            this.processData(updatedResponse);
-                        } catch (e) {
-                            this.errorValue = 0;
-                            this.errorMessage = this.errorHandling.handleJavascriptError(e);
-                            this.getErrorValues();
-                        }
-                    },
-                    (error) => {
-                        this.showGenericMessage = true;
-                        this.outerArr = [];
-                        this.errorMessage = error;
-                        this.getErrorValues();
-                    },
-                );
+    getAllPatchingDetails(isNextPageCalled = false) {
+        if (!this.ruleID) {
+            return;
         }
+
+        const payload = {
+            ag: this.selectedAssetGroup,
+            filter: { 'policyId.keyword': this.ruleID, domain: this.selectedDomain },
+            from: this.bucketNumber * this.paginatorSize,
+            searchtext: this.searchTxt,
+            size: this.paginatorSize,
+        };
+        this.errorValue = 0;
+        const policyViolationUrl = environment.policyViolation.url;
+        const policyViolationMethod = environment.policyViolation.method;
+
+        if (this.dataSubscription) {
+            this.dataSubscription.unsubscribe();
+        }
+
+        this.dataSubscription = this.commonResponseService
+            .getData(policyViolationUrl, policyViolationMethod, payload, {})
+            .subscribe(
+                (response) => {
+                    this.showGenericMessage = false;
+                    try {
+                        if (!isNextPageCalled) {
+                            this.tableData = [];
+                        }
+                        this.errorValue = 1;
+                        this.tableDataLoaded = true;
+                        this.dataTableData = response.data.response;
+                        this.totalRows = response.data.total;
+
+                        const updatedResponse = this.massageData(response.data.response);
+                        const processedData = this.processData(updatedResponse);
+
+                        if (isNextPageCalled) {
+                            this.onScrollDataLoaded.next(processedData);
+                        } else {
+                            this.tableData = processedData;
+                        }
+                    } catch (e) {
+                        this.errorValue = 0;
+                        this.errorMessage = this.errorHandling.handleJavascriptError(e);
+                        this.getErrorValues();
+                    }
+                },
+                (error) => {
+                    this.showGenericMessage = true;
+                    this.tableData = [];
+                    this.errorMessage = error;
+                    this.getErrorValues();
+                },
+            );
     }
 
     getErrorValues(): void {
         this.errorValue = -1;
-        this.showLoader = false;
-        this.dataComing = false;
-        this.seekdata = true;
         this.totalRows = 0;
     }
 
@@ -295,8 +279,8 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
         let innerArr = {};
         const totalVariablesObj = {};
         let cellObj = {};
-        this.outerArr = [];
         const getData = data;
+        let processedData = [];
 
         const getCols = Object.keys(getData[0]);
 
@@ -311,12 +295,11 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
                 ) {
                     cellObj = {
                         isLink: true,
-                        colName: getCols[col],
                         hasPreImg: false,
                         imgLink: '',
                         valueText: cellData,
                         titleText: cellData,
-                        text: getData[row][getCols[col]],
+                        text: cellData,
                     };
                 } else if (
                     getCols[col].toLowerCase() === 'issue id' ||
@@ -325,7 +308,6 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
                 ) {
                     cellObj = {
                         isLink: true,
-                        colName: getCols[col],
                         hasPreImg: false,
                         imgLink: '',
                         valueText: cellData,
@@ -338,7 +320,6 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
                 ) {
                     cellObj = {
                         isLink: false,
-                        colName: getCols[col],
                         hasPreImg: false,
                         imgLink: '',
                         text: this.utils.calculateDateAndTime(cellData),
@@ -347,7 +328,6 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
                 } else {
                     cellObj = {
                         isLink: false,
-                        colName: getCols[col],
                         hasPreImg: false,
                         imgLink: '',
                         text: cellData,
@@ -359,13 +339,14 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
                 innerArr[getCols[col]] = cellObj;
                 totalVariablesObj[getCols[col]] = '';
             }
-            this.outerArr.push(innerArr);
+            processedData.push(innerArr);
         }
-        if (this.outerArr.length > getData.length) {
-            const halfLength = this.outerArr.length / 2;
-            this.outerArr = this.outerArr.splice(halfLength);
+        if (processedData.length > getData.length) {
+            const halfLength = processedData.length / 2;
+            processedData = processedData.splice(halfLength);
         }
         this.allColumns = Object.keys(totalVariablesObj);
+        return processedData;
     }
 
     goToDetails(row) {
@@ -437,19 +418,10 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
         }
     }
 
-    nextPg() {
-        if (this.currentPointer < this.bucketNumber) {
-            this.currentPointer++;
-            this.processData(this.currentBucket[this.currentPointer]);
-            this.firstPaginator = this.currentPointer * this.paginatorSize + 1;
-            this.lastPaginator = this.currentPointer * this.paginatorSize + this.paginatorSize;
-            if (this.lastPaginator > this.totalRows) {
-                this.lastPaginator = this.totalRows;
-            }
-        } else {
-            this.bucketNumber++;
-            this.getData();
-        }
+    nextPg(event: number) {
+        this.tableScrollTop = event;
+        this.bucketNumber++;
+        this.getAllPatchingDetails(true);
         this.getUpdatedUrl();
     }
 
@@ -459,8 +431,7 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
 
     callNewSearch() {
         this.bucketNumber = 0;
-        this.currentBucket = [];
-        this.getData();
+        this.getAllPatchingDetails();
     }
 
     ngOnDestroy() {
