@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AssetGroupObservableService } from 'src/app/core/services/asset-group-observable.service';
 import { DomainTypeObservableService } from 'src/app/core/services/domain-type-observable.service';
+import { TableStateService } from 'src/app/core/services/table-state.service';
 import { WorkflowService } from 'src/app/core/services/workflow.service';
 import { CommonResponseService } from 'src/app/shared/services/common-response.service';
 import { DownloadService } from 'src/app/shared/services/download.service';
@@ -40,6 +41,8 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
 
     outerArr: any;
     allColumns: any;
+
+    whitelistColumns: string[];
 
     selectedAssetGroup: string;
     selectedDomain: string;
@@ -72,20 +75,28 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
     private subscriptionToAssetGroup: Subscription;
     private domainSubscription: Subscription;
     private dataSubscription: Subscription;
+    columnWidths: { [key: string]: number } = {
+        'Policy Name': 2,
+        'Issue ID': 1,
+        'Resource ID': 1,
+        Severity: 1,
+        Category: 1,
+    };
 
     constructor(
-        private commonResponseService: CommonResponseService,
+        private activatedRoute: ActivatedRoute,
         private assetGroupObservableService: AssetGroupObservableService,
         private autorefreshService: AutorefreshService,
-        private logger: LoggerService,
-        private errorHandling: ErrorHandlingService,
-        private router: Router,
-        private activatedRoute: ActivatedRoute,
+        private commonResponseService: CommonResponseService,
+        private domainObservableService: DomainTypeObservableService,
         private downloadService: DownloadService,
+        private errorHandling: ErrorHandlingService,
+        private logger: LoggerService,
+        private refactorFieldsService: RefactorFieldsService,
+        private router: Router,
+        private tableStateService: TableStateService,
         private utils: UtilsService,
         private workflowService: WorkflowService,
-        private refactorFieldsService: RefactorFieldsService,
-        private domainObservableService: DomainTypeObservableService,
     ) {
         this.headerColName = this.activatedRoute.snapshot.queryParams.headerColName;
         this.direction = this.activatedRoute.snapshot.queryParams.direction;
@@ -110,6 +121,8 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        const state = this.tableStateService.getState('all-policy-violations');
+        this.whitelistColumns = state?.whiteListColumns || Object.keys(this.columnWidths);
         this.updateComponent();
     }
 
@@ -290,21 +303,19 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
         for (let row = 0; row < getData.length; row++) {
             innerArr = {};
             for (let col = 0; col < getCols.length; col++) {
+                const cellData = getData[row][getCols[col]];
                 if (
                     getCols[col].toLowerCase() === '_resourceid' ||
                     getCols[col].toLowerCase() === 'resourceid' ||
                     getCols[col].toLowerCase() === 'resource id'
                 ) {
                     cellObj = {
-                        link: 'true',
-                        properties: {
-                            'text-shadow': '0.1px 0',
-                            'text-transform': 'lowercase',
-                        },
+                        isLink: true,
                         colName: getCols[col],
                         hasPreImg: false,
                         imgLink: '',
-                        valText: getData[row][getCols[col]],
+                        valueText: cellData,
+                        titleText: cellData,
                         text: getData[row][getCols[col]],
                     };
                 } else if (
@@ -313,121 +324,35 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
                     getCols[col].toLowerCase() === 'policy name'
                 ) {
                     cellObj = {
-                        link: 'true',
-                        properties: {
-                            'text-transform': 'lowercase',
-                            'text-shadow': '0.1px 0',
-                        },
+                        isLink: true,
                         colName: getCols[col],
                         hasPreImg: false,
                         imgLink: '',
-                        valText: getData[row][getCols[col]],
-                        text: getData[row][getCols[col]],
+                        valueText: cellData,
+                        titleText: cellData,
+                        text: cellData,
                     };
                 } else if (
                     getCols[col].toLowerCase() === 'created on' ||
                     getCols[col].toLowerCase() === 'modified on'
                 ) {
                     cellObj = {
-                        link: '',
-                        properties: {
-                            color: '',
-                        },
+                        isLink: false,
                         colName: getCols[col],
                         hasPreImg: false,
                         imgLink: '',
-                        text: this.utils.calculateDateAndTime(getData[row][getCols[col]]),
-                        valText: this.utils.calculateDateAndTime(getData[row][getCols[col]]),
+                        text: this.utils.calculateDateAndTime(cellData),
+                        valText: this.utils.calculateDateAndTime(cellData),
                     };
-                } else if (getCols[col].toLowerCase() === 'severity') {
-                    if (getData[row][getCols[col]].toLowerCase() === 'low') {
-                        cellObj = {
-                            link: '',
-                            properties: {
-                                color: '',
-                                'text-transform': 'capitalize',
-                            },
-                            colName: getCols[col],
-                            hasPreImg: true,
-                            valText: 1,
-                            imgLink: '',
-                            text: getData[row][getCols[col]],
-                            statusProp: {
-                                'background-color': '#ffe00d',
-                                height: '8px',
-                                width: '8px',
-                                'border-radius': '4px',
-                            },
-                        };
-                    } else if (getData[row][getCols[col]].toLowerCase() === 'medium') {
-                        cellObj = {
-                            link: '',
-                            properties: {
-                                color: '',
-                                'text-transform': 'capitalize',
-                            },
-                            colName: getCols[col],
-                            valText: 2,
-                            hasPreImg: true,
-                            imgLink: '',
-                            text: getData[row][getCols[col]],
-                            statusProp: {
-                                'background-color': '#ffb00d',
-                                height: '8px',
-                                width: '8px',
-                                'border-radius': '4px',
-                            },
-                        };
-                    } else if (getData[row][getCols[col]].toLowerCase() === 'high') {
-                        cellObj = {
-                            link: '',
-                            properties: {
-                                color: '',
-                                'text-transform': 'capitalize',
-                            },
-                            colName: getCols[col],
-                            hasPreImg: true,
-                            imgLink: '',
-                            valText: 3,
-                            text: getData[row][getCols[col]],
-                            statusProp: {
-                                'background-color': '#f75303',
-                                height: '8px',
-                                width: '8px',
-                                'border-radius': '4px',
-                            },
-                        };
-                    } else {
-                        cellObj = {
-                            link: '',
-                            valText: 4,
-                            properties: {
-                                color: '',
-                                'text-transform': 'capitalize',
-                            },
-                            colName: getCols[col],
-                            hasPreImg: true,
-                            imgLink: '',
-                            text: getData[row][getCols[col]],
-                            statusProp: {
-                                'background-color': '#d40325',
-                                height: '8px',
-                                width: '8px',
-                                'border-radius': '4px',
-                            },
-                        };
-                    }
                 } else {
                     cellObj = {
-                        link: '',
-                        properties: {
-                            color: '',
-                        },
+                        isLink: false,
                         colName: getCols[col],
                         hasPreImg: false,
                         imgLink: '',
-                        text: getData[row][getCols[col]],
-                        valText: getData[row][getCols[col]],
+                        text: cellData,
+                        valueText: cellData,
+                        titleText: cellData,
                     };
                 }
 
@@ -510,16 +435,6 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
             this.errorMessage = this.errorHandling.handleJavascriptError(error);
             this.logger.log('error', error);
         }
-    }
-
-    prevPg() {
-        this.currentPointer--;
-        // this.processData(this.currentBucket[this.currentPointer]);
-        this.firstPaginator = this.currentPointer * this.paginatorSize + 1;
-        this.lastPaginator = this.currentPointer * this.paginatorSize + this.paginatorSize;
-        this.bucketNumber--;
-        this.getData();
-        this.getUpdatedUrl();
     }
 
     nextPg() {
