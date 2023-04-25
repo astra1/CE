@@ -354,67 +354,60 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
 
     goToDetails(row) {
         try {
-            const updatedQueryParams = { ...this.activatedRoute.snapshot.queryParams };
-            updatedQueryParams['headerColName'] = undefined;
-            updatedQueryParams['direction'] = undefined;
-            updatedQueryParams['bucketNumber'] = undefined;
-            updatedQueryParams['searchValue'] = undefined;
-            if (row.col.toLowerCase() === 'resource id') {
-                this.workflowService.addRouterSnapshotToLevel(
-                    this.router.routerState.snapshot.root,
-                    0,
-                    this.breadcrumbPresent,
-                );
-                this.router.navigate(
-                    [
-                        '../../../',
-                        'assets',
-                        'asset-list',
-                        row.row['Asset Type'].text,
-                        encodeURIComponent(row.row['Resource ID'].text),
-                    ],
-                    {
-                        relativeTo: this.activatedRoute,
-                        queryParams: updatedQueryParams,
-                        queryParamsHandling: 'merge',
-                    },
-                );
-            } else if (
-                row.col.toLowerCase() === 'issue id' ||
-                row.col.toLowerCase() === 'issueid'
-            ) {
-                this.workflowService.addRouterSnapshotToLevel(
-                    this.router.routerState.snapshot.root,
-                    0,
-                    this.breadcrumbPresent,
-                );
-                this.router.navigate(
-                    ['../../issue-listing/issue-details', row.row['Issue ID'].text],
-                    {
-                        relativeTo: this.activatedRoute,
-                        queryParams: updatedQueryParams,
-                        queryParamsHandling: 'merge',
-                    },
-                );
-            } else if (row.col.toLowerCase() === 'policy name') {
-                this.workflowService.addRouterSnapshotToLevel(
-                    this.router.routerState.snapshot.root,
-                    0,
-                    this.breadcrumbPresent,
-                );
-                this.router.navigate(
-                    [
+            const rowName = row.col.toLowerCase();
+            const selectedRow = row.rowSelected;
+            let routeCommands = [];
+
+            switch (rowName) {
+                case 'resource id':
+                    routeCommands = [
+                        '/pl/assets/asset-list',
+                        selectedRow['Asset Type'].text,
+                        encodeURIComponent(selectedRow['Resource ID'].text),
+                    ];
+                    break;
+
+                case 'issue id':
+                case 'issueid':
+                    routeCommands = [
+                        '/pl/compliance/issue-listing/issue-details',
+                        selectedRow['Issue ID'].text,
+                    ];
+                    break;
+
+                case 'policy name':
+                    routeCommands = [
                         '/pl/compliance/policy-knowledgebase-details',
-                        row.row.nonDisplayableAttributes.text.PolicyId,
+                        selectedRow.nonDisplayableAttributes.text.PolicyId,
                         'false',
-                    ],
-                    {
-                        relativeTo: this.activatedRoute,
-                        queryParams: updatedQueryParams,
-                        queryParamsHandling: 'merge',
-                    },
-                );
+                    ];
+                    break;
+
+                default:
+                    return;
             }
+
+            this.workflowService.addRouterSnapshotToLevel(
+                this.router.routerState.snapshot.root,
+                0,
+                this.breadcrumbPresent,
+            );
+
+            const updatedQueryParams = {
+                ...this.activatedRoute.snapshot.queryParams,
+                ...{
+                    headerColName: undefined,
+                    direction: undefined,
+                    bucketNumber: undefined,
+                    searchValue: undefined,
+                },
+            };
+
+            this.router.navigate(routeCommands, {
+                relativeTo: this.activatedRoute,
+                queryParams: updatedQueryParams,
+                queryParamsHandling: 'merge',
+            });
         } catch (error) {
             this.errorMessage = this.errorHandling.handleJavascriptError(error);
             this.logger.log('error', error);
