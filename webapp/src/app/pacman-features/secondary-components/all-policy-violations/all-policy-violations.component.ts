@@ -26,35 +26,34 @@ import { LoggerService } from 'src/app/shared/services/logger.service';
 import { RefactorFieldsService } from 'src/app/shared/services/refactor-fields.service';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { environment } from 'src/environments/environment';
-import { AutorefreshService } from '../../services/autorefresh.service';
+import { IssueFilterService } from '../../services/issue-filter.service';
 
 @Component({
     selector: 'app-all-policy-violations',
     templateUrl: './all-policy-violations.component.html',
     styleUrls: ['./all-policy-violations.component.css'],
-    providers: [CommonResponseService, AutorefreshService],
+    providers: [CommonResponseService, IssueFilterService],
 })
 export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
     @Input() breadcrumbPresent;
     @Input() pageLevel = 0;
-    @Input() ruleID: any;
+    @Input() ruleID: string;
 
     allColumns: any;
 
     whitelistColumns: string[];
 
+    filterTypeLabels = [];
+    filterTagLabels = {};
+    filterTypeOptions = {};
+    filters = [];
+
     selectedAssetGroup: string;
     selectedDomain: string;
-    apiData: any;
-    applicationValue: any;
-    errorMessage: any;
+    errorMessage: string;
     tableHeaderData: any;
-    durationParams: any;
-    autoRefresh: boolean;
     totalRows = 0;
     bucketNumber = 0;
-    popRows: any = ['Download Data'];
-    dataTableData: any = [];
     tableDataLoaded = false;
     paginatorSize = 10;
     searchTxt = '';
@@ -62,7 +61,7 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
     showGenericMessage = false;
     pageTitle = 'Policy Violations';
     headerColName;
-    direction;
+    direction: string;
 
     onScrollDataLoaded = new Subject<any[]>();
 
@@ -82,11 +81,11 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
     constructor(
         private activatedRoute: ActivatedRoute,
         private assetGroupObservableService: AssetGroupObservableService,
-        private autorefreshService: AutorefreshService,
         private commonResponseService: CommonResponseService,
         private domainObservableService: DomainTypeObservableService,
         private downloadService: DownloadService,
         private errorHandling: ErrorHandlingService,
+        private filtersService: IssueFilterService,
         private logger: LoggerService,
         private refactorFieldsService: RefactorFieldsService,
         private router: Router,
@@ -110,15 +109,26 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
                 this.selectedDomain = domain;
                 this.updateComponent();
             });
-
-        this.durationParams = this.autorefreshService.getDuration();
-        this.durationParams = parseInt(this.durationParams, 10);
-        this.autoRefresh = this.autorefreshService.autoRefresh;
     }
 
     ngOnInit() {
         const state = this.tableStateService.getState('all-policy-violations');
         this.whitelistColumns = state?.whiteListColumns || Object.keys(this.columnWidths);
+        this.getFilters();
+    }
+
+    getFilters() {
+        const filterId = 9;
+        this.filtersService
+            .getFilters(
+                {
+                    filterId,
+                    domain: this.selectedDomain,
+                },
+                environment.issueFilter.url,
+                environment.issueFilter.method,
+            )
+            .subscribe((response) => {});
         this.updateComponent();
     }
 
@@ -147,19 +157,13 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
         /* All functions variables which are required to be set for component to be reloaded should go here */
         this.tableData = [];
         this.searchTxt = '';
-        this.dataTableData = [];
         this.tableDataLoaded = false;
         this.errorValue = 0;
         this.showGenericMessage = false;
-        this.getData();
-    }
-
-    getData() {
-        /* All functions to get data should go here */
         this.getAllPatchingDetails();
     }
 
-    handlePopClick(rowText) {
+    downloadTableData(rowText) {
         const fileType = 'csv';
 
         try {
@@ -224,7 +228,6 @@ export class AllPolicyViolationsComponent implements OnInit, OnDestroy {
                         }
                         this.errorValue = 1;
                         this.tableDataLoaded = true;
-                        this.dataTableData = response.data.response;
                         this.totalRows = response.data.total;
 
                         const updatedResponse = this.massageData(response.data.response);
