@@ -58,6 +58,7 @@ import { FirstTimeUserJourneyComponent } from './first-time-user-journey/first-t
 import { KnowYourDashboardComponent } from './know-your-dashboard/know-your-dashboard.component';
 import { PostLoginAppRoutingModule } from './post-login-app-routing.module';
 import { PostLoginAppComponent } from './post-login-app.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { VulnerabilityReportComponent } from './vulnerability-report/vulnerability-report.component';
 
 @NgModule({
@@ -101,6 +102,7 @@ import { VulnerabilityReportComponent } from './vulnerability-report/vulnerabili
         VulnReportTrendComponent,
         VulnReportWorkflowComponent,
         VulnTrendGraphComponent,
+        UserSettingsComponent,
     ],
 
     providers: [

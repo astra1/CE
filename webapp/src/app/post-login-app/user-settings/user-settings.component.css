@@ -1,0 +1,56 @@
+.user-settings-container {
+    min-height: 435px;
+    background-color: var(--background-white);
+    width: 72vw;
+    height: 80vh;
+    position: fixed;
+    transition: 0.4s ease;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 15;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-100);
+}
+
+.user-setting-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.user-setting-header > * {
+    margin-left: auto;
+}
+
+.user-settings-close {
+    color: var(--text-low-emphasis);
+}
+
+.user-settings-close:hover {
+    cursor: pointer;
+}
+
+.settings-form {
+    padding: 0 var(--spacing-xl);
+}
+
+.settings-option-container {
+    margin-top: var(--spacing-xl);
+}
+
+.settings-option-name {
+    font-size: var(--text-body-1-font-size);
+    font-family: var(--text-medium-font-family);
+    font-weight: var(--text-font-weight);
+    margin-bottom: var(--spacing-md);
+}
+
+.settings-option-value {
+    margin-bottom: var(--spacing-sm);
+}
+
+.settings-option-label {
+    font-family: var(--text-font-family);
+    font-size: var(--text-body-2-font-size);
+}

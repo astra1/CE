@@ -1,0 +1,19 @@
+<app-overlay (click)="closeModal()"></app-overlay>
+<div class="user-settings-container">
+    <div class="user-setting-header flex">
+        <app-title-burger-head subHeadTitle="Settings"> </app-title-burger-head>
+        <div class="user-settings-close" (click)="closeModal()">
+            <img alt="Close" src="/assets/icons/x-icon.svg" />
+        </div>
+    </div>
+    <form class="settings-form" [formGroup]="settingsForm">
+        <div class="settings-option-container">
+            <div class="settings-option-name">Notifications</div>
+            <div class="settings-option-value">
+                <mat-slide-toggle formControlName="inAppNotifications">
+                    <span class="settings-option-label">Receive In-App notifications</span>
+                </mat-slide-toggle>
+            </div>
+        </div>
+    </form>
+</div>

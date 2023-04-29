@@ -34,9 +34,10 @@ import { TableStateService } from './services/table-state.service';
 import { ThemeObservableService } from './services/theme-observable.service';
 import { WindowExpansionService } from './services/window-expansion.service';
 import { WorkflowService } from './services/workflow.service';
+import { NgxsStoreModule } from './store/store.module';
 
 @NgModule({
-    imports: [CommonModule, GraphQLModule, SharedModule],
+    imports: [CommonModule, GraphQLModule, NgxsStoreModule, SharedModule],
     declarations: [],
     exports: [],
     providers: [

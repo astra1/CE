@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="header-user-wrapper flex">
+    <div class="header-user-wrapper flex gap-16">
         <mat-icon
             class="header-user-notification material-icons-outlined"
             title="Notifications"
@@ -21,6 +21,15 @@
         >
             notifications
         </mat-icon>
+
+        <mat-icon
+            class="header-user-settings material-icons-outlined"
+            title="Settings"
+            (click)="openSettings()"
+        >
+            settings
+        </mat-icon>
+
         <div class="header-user-content-wrapper">
             <div class="user-image-wrapper">
                 <h3>{{ userName[0] }}</h3>

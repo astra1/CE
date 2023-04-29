@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -26,12 +27,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { RouterModule } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
@@ -135,11 +136,11 @@ import { WidgetSectionStarterComponent } from './widget-section-starter/widget-s
         MatMenuModule,
         MatNativeDateModule,
         MatSelectModule,
+        MatSlideToggleModule,
         MatSnackBarModule,
         MatSortModule,
         MatStepperModule,
         MatTableModule,
-        MatTooltipModule,
         MatTooltipModule,
         ReactiveFormsModule,
         RouterModule,
@@ -260,6 +261,7 @@ import { WidgetSectionStarterComponent } from './widget-section-starter/widget-s
         MainFilterComponent,
         MatIconModule,
         MatSelectModule,
+        MatSlideToggleModule,
         MatTooltipModule,
         MulitidoughnutbandComponent,
         MultilineTrendComponent,
