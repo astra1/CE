@@ -2,14 +2,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngxs/store';
 import { Apollo } from 'apollo-angular';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { NEVER, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { NOTIFICATIONS_SUBSCRIPTION } from 'src/app/core/graphql/subscriptions/notifications.gql';
-import { AuthService } from '../../../core/services/auth.service';
-import { DataCacheService } from '../../../core/services/data-cache.service';
-import { PermissionGuardService } from '../../../core/services/permission-guard.service';
-import { LoggerService } from '../../../shared/services/logger.service';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { DataCacheService } from 'src/app/core/services/data-cache.service';
+import { PermissionGuardService } from 'src/app/core/services/permission-guard.service';
+import { SettingsState } from 'src/app/core/store/settings/settings.state';
+import { LoggerService } from 'src/app/shared/services/logger.service';
 
 @Component({
     selector: 'app-header',
@@ -38,6 +40,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private permissions: PermissionGuardService,
         private route: ActivatedRoute,
         private router: Router,
+        private store: Store,
     ) {
         this.matIconRegistry.addSvgIcon(
             'customSearchIcon',
@@ -60,19 +63,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 this.userEmail = emailData;
                 this.userName = this.userEmail.split('@')[0].split('.')[0];
             }
-
-            this.getProfilePictureOfUser();
         } catch (error) {
             this.loggerService.log('error', 'JS Error' + error);
         }
 
-        this.apollo
-            .subscribe({
-                query: NOTIFICATIONS_SUBSCRIPTION,
-                variables: {
-                    name: this.NOTIFICATIONS_CHANNEL,
-                },
-            })
+        this.store
+            .select(SettingsState.inAppNotifications)
+            .pipe(
+                switchMap((enabled) =>
+                    enabled
+                        ? this.apollo.subscribe({
+                              query: NOTIFICATIONS_SUBSCRIPTION,
+                              variables: {
+                                  name: this.NOTIFICATIONS_CHANNEL,
+                              },
+                          })
+                        : NEVER,
+                ),
+            )
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: () => (this.haveNewNotification = true),
@@ -92,26 +100,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         });
     }
 
-    getProfilePictureOfUser() {
-        // Get profile picture of user from azure ad.
-        // this.adalService.acquireToken(CONFIGURATIONS.optional.auth.resource).subscribe(token => {
-        //     const api = environment.fetchProfilePic.url;
-        //     const httpMethod = environment.fetchProfilePic.method;
-        //     const header = new HttpHeaders();
-        //     const updatedHeader = header.append('Authorization', 'Bearer ' + token);
-        //     this.httpResponseService.getBlobHttpResponse(api, httpMethod, {}, {}, {headers: updatedHeader}).subscribe(response => {
-        //         this.utilService.generateBase64String(response).subscribe(image => {
-        //             this.loggerService.log('info', 'user profile pic received');
-        //             this.dataCacheService.setUserProfileImage(image);
-        //             this.profilePictureSrc = image;
-        //         });
-        //     },
-        //     error => {
-        //         this.loggerService.log('error', 'error while fetching image from azure ad - ' + error);
-        //     });
-        // }, error => {
-        //     this.loggerService.log('error', 'Error while fetching access token for resource - ' + error);
-        // });
+    openSettings() {
+        this.router.navigate(['/pl', { outlets: { modal: ['user-settings'] } }], {
+            queryParamsHandling: 'merge',
+        });
     }
 
     logout() {
