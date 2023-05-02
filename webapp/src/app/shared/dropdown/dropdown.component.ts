@@ -1,5 +1,5 @@
 import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-dropdown',
@@ -19,7 +19,7 @@ export class DropdownComponent implements OnChanges {
   @Input() selectedList = [];
   @Output() selected = new EventEmitter();
   @Output() closeEventEmitter = new EventEmitter();
-  listControl = new FormControl([]);
+  listControl = new UntypedFormControl([]);
 
   itemList = [];
   optionList = [];

@@ -34,8 +34,8 @@ import { UtilsService } from "../../../../shared/services/utils.service";
 import { DomainTypeObservableService } from "../../../../core/services/domain-type-observable.service";
 import { ICONS } from "./../../../../shared/constants/icons-mapping";
 import {
-  FormControl,
-  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
   FormBuilder,
   Validators,
 } from "@angular/forms";
@@ -100,7 +100,7 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
   pageLoad = false; // -> To know if the page is loaded first time(reqired in cacheinf)
   searchClicked = true; // -> to detect if the search is clicked (based on this resultsDataSubscription is getting called)
   filterDataIsRequested = true; // whenever searchbtn is clicked we pass this variable to main filter to show loader
-  user: FormGroup; // Formgroup added for mandatory fields to be verified.
+  user: UntypedFormGroup; // Formgroup added for mandatory fields to be verified.
 
   constructor(
     private omniSearchDataService: OmniSearchDataService,
@@ -165,8 +165,8 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
           }, this.durationParams);
         }
       }
-      this.user = new FormGroup({
-        name: new FormControl("", [
+      this.user = new UntypedFormGroup({
+        name: new UntypedFormControl("", [
           Validators.required,
           Validators.minLength(1),
         ]),

@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import {MatTableDataSource} from '@angular/material/table';
@@ -59,7 +59,7 @@ export class TableComponent implements OnInit,AfterViewInit, OnChanges {
 
   displayedColumns;
   @Input() whiteListColumns = [];
-  searchInColumns = new FormControl();
+  searchInColumns = new UntypedFormControl();
 
   @ViewChild('select') select: MatSelect;
   @ViewChild('allColumnsSelected') private allColumnsSelected: MatOption;
