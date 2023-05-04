@@ -1,0 +1,71 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AssetGroupObservableService } from 'projects/pacman-spa/src/app/core/services/asset-group-observable.service';
+import { DataCacheService } from 'projects/pacman-spa/src/app/core/services/data-cache.service';
+import { DomainTypeObservableService } from 'projects/pacman-spa/src/app/core/services/domain-type-observable.service';
+import { WorkflowService } from 'projects/pacman-spa/src/app/core/services/workflow.service';
+import { OverlayComponent } from 'projects/pacman-spa/src/app/shared/overlay/overlay.component';
+import { ErrorHandlingService } from 'projects/pacman-spa/src/app/shared/services/error-handling.service';
+import { HttpService } from 'projects/pacman-spa/src/app/shared/services/http-response.service';
+import { LoggerService } from 'projects/pacman-spa/src/app/shared/services/logger.service';
+import { RefactorFieldsService } from 'projects/pacman-spa/src/app/shared/services/refactor-fields.service';
+import { RouterUtilityService } from 'projects/pacman-spa/src/app/shared/services/router-utility.service';
+import { UtilsService } from 'projects/pacman-spa/src/app/shared/services/utils.service';
+import { TitleBurgerHeadComponent } from 'projects/pacman-spa/src/app/shared/title-burger-head/title-burger-head.component';
+import { SelectComplianceDropdown } from '../../services/select-compliance-dropdown.service';
+
+import { IssuesTrendHistoryComponent } from './issues-trend-history.component';
+
+describe('IssuesTrendHistoryComponent', () => {
+  let component: IssuesTrendHistoryComponent;
+  let fixture: ComponentFixture<IssuesTrendHistoryComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      declarations: [
+        IssuesTrendHistoryComponent,
+        OverlayComponent,
+        TitleBurgerHeadComponent,
+      ],
+      providers: [
+        AssetGroupObservableService,
+        DataCacheService,
+        DomainTypeObservableService,
+        ErrorHandlingService,
+        HttpService,
+        LoggerService,
+        RefactorFieldsService,
+        RouterUtilityService,
+        SelectComplianceDropdown,
+        UtilsService,
+        WorkflowService,
+      ],
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(IssuesTrendHistoryComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

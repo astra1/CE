@@ -4,8 +4,8 @@
     "newProjectRoot": "projects",
     "projects": {
         "pacman-spa": {
-            "root": "",
-            "sourceRoot": "src",
+            "root": "projects/pacman-spa",
+            "sourceRoot": "projects/pacman-spa/src",
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:application": {
@@ -17,14 +17,17 @@
                 "build": {
                     "builder": "ngx-build-plus:browser",
                     "options": {
-                        "outputPath": "dist",
-                        "index": "src/index.html",
-                        "main": "src/main.ts",
-                        "tsConfig": "tsconfig.app.json",
-                        "polyfills": "src/polyfills.ts",
-                        "assets": ["src/assets", "src/favicon.ico"],
+                        "outputPath": "dist/pacman-spa",
+                        "index": "projects/pacman-spa/src/index.html",
+                        "main": "projects/pacman-spa/src/main.ts",
+                        "tsConfig": "projects/pacman-spa/tsconfig.app.json",
+                        "polyfills": "projects/pacman-spa/src/polyfills.ts",
+                        "assets": [
+                            "projects/pacman-spa/src/assets",
+                            "projects/pacman-spa/src/favicon.ico"
+                        ],
                         "styles": [
-                            "src/styles.css",
+                            "projects/pacman-spa/src/styles.css",
                             "node_modules/offline-js/themes/offline-theme-chrome.css",
                             "node_modules/offline-js/themes/offline-language-english.css",
                             "node_modules/ag-grid-community/styles/ag-grid.min.css",
@@ -34,7 +37,7 @@
                             "node_modules/offline-js/offline.js",
                             "node_modules/ag-grid-community/dist/ag-grid-community.min.noStyle.js"
                         ],
-                        "extraWebpackConfig": "webpack.config.js",
+                        "extraWebpackConfig": "projects/pacman-spa/webpack.config.js",
                         "commonChunk": false
                     },
                     "configurations": {
@@ -53,12 +56,12 @@
                             ],
                             "fileReplacements": [
                                 {
-                                    "replace": "src/environments/environment.ts",
-                                    "with": "src/environments/environment.prod.ts"
+                                    "replace": "projects/pacman-spa/src/environments/environment.ts",
+                                    "with": "projects/pacman-spa/src/environments/environment.prod.ts"
                                 }
                             ],
                             "outputHashing": "all",
-                            "extraWebpackConfig": "webpack.prod.config.js"
+                            "extraWebpackConfig": "projects/pacman-spa/webpack.prod.config.js"
                         },
                         "development": {
                             "buildOptimizer": false,
@@ -76,7 +79,7 @@
                     "configurations": {
                         "production": {
                             "browserTarget": "pacman-spa:build:production",
-                            "extraWebpackConfig": "webpack.prod.config.js"
+                            "extraWebpackConfig": "projects/pacman-spa/webpack.prod.config.js"
                         },
                         "development": {
                             "browserTarget": "pacman-spa:build:development"
@@ -86,42 +89,45 @@
                     "options": {
                         "port": 4200,
                         "publicHost": "http://localhost:4200",
-                        "extraWebpackConfig": "webpack.config.js"
+                        "extraWebpackConfig": "projects/pacman-spa/webpack.config.js"
                     }
                 },
                 "extract-i18n": {
                     "builder": "ngx-build-plus:extract-i18n",
                     "options": {
                         "browserTarget": "pacman-spa:build",
-                        "extraWebpackConfig": "webpack.config.js"
+                        "extraWebpackConfig": "projects/pacman-spa/webpack.config.js"
                     }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "main": "src/test.ts",
-                        "karmaConfig": "./karma.conf.js",
-                        "polyfills": "src/polyfills.ts",
-                        "tsConfig": "tsconfig.spec.json",
+                        "main": "projects/pacman-spa/src/test.ts",
+                        "karmaConfig": "projects/pacman-spa/karma.conf.js",
+                        "polyfills": "projects/pacman-spa/src/polyfills.ts",
+                        "tsConfig": "projects/pacman-spa/tsconfig.spec.json",
                         "scripts": [
                             "node_modules/offline-js/offline.js",
                             "node_modules/ag-grid-community/dist/ag-grid-community.min.noStyle.js",
                             "node_modules/apexcharts/dist/apexcharts.min.js"
                         ],
                         "styles": [
-                            "src/styles.css",
+                            "projects/pacman-spa/src/styles.css",
                             "node_modules/offline-js/themes/offline-theme-chrome.css",
                             "node_modules/offline-js/themes/offline-language-english.css",
                             "node_modules/ag-grid-community/styles/ag-grid.min.css",
                             "node_modules/ag-grid-community/styles/ag-theme-material-no-font.min.css"
                         ],
-                        "assets": ["src/assets", "src/favicon.ico"]
+                        "assets": [
+                            "projects/pacman-spa/src/assets",
+                            "projects/pacman-spa/src/favicon.ico"
+                        ]
                     }
                 },
                 "lint": {
                     "builder": "@angular-eslint/builder:lint",
                     "options": {
-                        "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+                        "lintFilePatterns": ["projects/**/src/**/*.ts", "projects/**/src/**/*.html"]
                     }
                 }
             }

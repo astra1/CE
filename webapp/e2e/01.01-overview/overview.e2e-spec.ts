@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -21,7 +21,7 @@ import { VulnerabilityCompliance } from '../page-objects/vulnerability-complianc
 import { PatchingCompliance } from '../page-objects/patching-compliance.po';
 import { CertificateCompliance } from '../page-objects/certificate-compliance.po';
 import { CompliancePolicy } from '../page-objects/compliance-policy.po';
-import { CONFIGURATIONS } from '../../src/config/configurations';
+import { CONFIGURATIONS } from '../../projects/pacman-spa/src/config/configurations';
 
 const timeOutHigh = 180000;
 const emailId = CONFIGURATIONS.optional.general.e2e.EMAIL_ID;
