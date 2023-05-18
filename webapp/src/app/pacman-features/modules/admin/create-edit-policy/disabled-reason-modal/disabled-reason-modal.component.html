@@ -1,0 +1,22 @@
+<div class="disabled-reason-container flex flex-col">
+    <div class="disabled-reason-header flex flex-between flex-align-center">
+        <div>Reason</div>
+        <mat-icon (click)="close()"> close </mat-icon>
+    </div>
+    <mat-form-field appearance="outline">
+        <textarea matInput cdkTextareaAutosize [cdkAutosizeMinRows]="3"> </textarea>
+    </mat-form-field>
+
+    <mat-form-field class="disabled-reason-date" appearance="outline">
+        <mat-label>Expiry Date</mat-label>
+        <input matInput [matDatepicker]="picker" />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="disabled-reason-actions flex flex-end">
+        <button class="dra-closebtn" type="button" (click)="close()">Cancel</button>
+        <button class="dra-disablebtn" type="button" (click)="disable()">Disable</button>
+    </div>
+</div>

@@ -1,114 +1,172 @@
 <div class="page-layout">
     <div *ngIf="backButtonRequired" class="breadcrumb-container" style="padding-bottom: 18px">
-        <app-breadcrumb *ngIf="breadcrumbLinks.length>0" [breadcrumbLinks]="breadcrumbLinks"
-            [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+        <app-breadcrumb
+            *ngIf="breadcrumbLinks.length > 0"
+            [breadcrumbLinks]="breadcrumbLinks"
+            [breadcrumbArray]="breadcrumbArray"
+            [breadcrumbPresent]="breadcrumbPresent"
+        ></app-breadcrumb>
     </div>
-    <div class="header" style="padding-bottom: 24px;">
-          <h6>{{policyDisplayName}}</h6>
-          <div class="status-wrapper">
+    <div class="header" style="padding-bottom: 24px">
+        <h6>{{ policyDisplayName }}</h6>
+        <div class="status-wrapper">
             <span class="body-1">Enabled</span>
             <mat-slide-toggle [checked]="status" (change)="toggleStatus($event)"></mat-slide-toggle>
-          </div>
+        </div>
     </div>
     <div class="right-wrapper">
-            <div class="details-wrapper">
-                <div class="details-header">
-                    <div class="details-header-text">
-                        Policy Details
-                    </div>
+        <div class="details-wrapper">
+            <div class="details-header">
+                <div class="details-header-text">Policy Details</div>
+            </div>
+            <div class="details-content-wrapper">
+                <div class="description-wrapper">
+                    <span class="desc-header">Description</span>
+                    <span class="desc">{{ description }}</span>
                 </div>
-                <div class="details-content-wrapper">
-                    <div class="description-wrapper">
-                        <span class="desc-header">Description</span>
-                        <span class="desc">{{description}}</span>
-                    </div>
-                    <a class="resolution-wrapper" target="_blank" href="{{resolutionUrl}}">
-                        <span class="resolution-link">More Information</span>
-                        <img  style="height: 14px;width: 12px;" src="../../../../../assets/icons/right-arrow-icon.svg">
-                    </a>    
-                    <div class="description-wrapper">
-                        <span class="desc-header">Asset Type</span>
-                        <span class="desc">{{selectedAssetType}}</span>
-                    </div>
-                    <form #policyForm="ngForm" class="form-wrapper">
-                        <div class="attributes-wrapper" *ngIf="hasEditableParams>0">
-                            <div class="divide-content">
-                                <span class="subtitle-2">Policy Parameters</span>
-                                 <div class="parameters-wrapper">
-                                    <div class="parameter-wrapper" *ngFor="let param of paramsList;let i=index" [class.hide]="!param.isEdit">
-                                            <div class="input-wrapper">
-                                                <mat-form-field appearance="outline">
-                                                    <mat-label>{{param.displayName}}</mat-label>
-                                                    <input autocomplete="off" matInput [name]="param.key" [required]="param.isMandatory"
-                                                        [(ngModel)]="param.value">
-                                                </mat-form-field>
-                                                <div class="info-img">
-                                                    <img src="../../../assets/icons/info-circle.svg" [matTooltip]="param.description" matTooltipPosition="right">
-                                                </div>
-                                            </div>
+                <a class="resolution-wrapper" target="_blank" [href]="resolutionUrl">
+                    <span class="resolution-link">More Information</span>
+                    <img
+                        style="height: 14px; width: 12px"
+                        src="assets/icons/right-arrow-icon.svg"
+                    />
+                </a>
+                <div class="description-wrapper">
+                    <span class="desc-header">Asset Type</span>
+                    <span class="desc">{{ selectedAssetType }}</span>
+                </div>
+                <form #policyForm="ngForm" class="form-wrapper">
+                    <div class="attributes-wrapper" *ngIf="hasEditableParams > 0">
+                        <div class="divide-content">
+                            <span class="subtitle-2">Policy Parameters</span>
+                            <div class="parameters-wrapper">
+                                <div
+                                    class="parameter-wrapper"
+                                    *ngFor="let param of paramsList; let i = index"
+                                    [class.hide]="!param.isEdit"
+                                >
+                                    <div class="input-wrapper">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>{{ param.displayName }}</mat-label>
+                                            <input
+                                                autocomplete="off"
+                                                matInput
+                                                [name]="param.key"
+                                                [required]="param.isMandatory"
+                                                [(ngModel)]="param.value"
+                                            />
+                                        </mat-form-field>
+                                        <div class="info-img">
+                                            <img
+                                                src="assets/icons/info-circle.svg"
+                                                [matTooltip]="param.description"
+                                                matTooltipPosition="right"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="attributes-wrapper" *ngIf="isAutofixAvailable">
+                        <div class="divide-content">
+                            <div class="header">
+                                <span class="subtitle-2">Autofix</span>
+                                <div class="status-wrapper">
+                                    <span class="body-1">Enabled</span>
+                                    <mat-slide-toggle
+                                        [class.isDisabled]="!status"
+                                        [checked]="isAutofixEnabled"
+                                        (change)="toggleAutofix($event)"
+                                    ></mat-slide-toggle>
+                                </div>
                             </div>
-                            <div class="attributes-wrapper" *ngIf="isAutofixAvailable">
-                                <div class="divide-content">
-                                    <div class="header">
-                                        <span class="subtitle-2">Autofix</span>
-                                        <div class="status-wrapper">
-                                          <span class="body-1">Enabled</span>
-                                          <mat-slide-toggle [class.isDisabled]="!status" [checked]="isAutofixEnabled" (change)="toggleAutofix($event)"></mat-slide-toggle>
+                            <div class="autofix-wrapper">
+                                <app-dropdown
+                                    [items]="accountList"
+                                    placeholder="Accounts"
+                                    [isChipListEnabled]="true"
+                                    [class.isDisabled]="!status || !isAutofixEnabled"
+                                    [selectedList]="selectedAccounts"
+                                    (selected)="onAccountsChange($event)"
+                                ></app-dropdown>
+                                <div class="header">
+                                    <span class="subtitle-2">Warning Notification</span>
+                                    <div class="status-wrapper">
+                                        <span class="body-1">Enabled</span>
+                                        <mat-slide-toggle
+                                            [disabled]="!isAutofixEnabled || !status"
+                                            [checked]="warningNotification"
+                                            (change)="toggleWarningNotification($event)"
+                                        ></mat-slide-toggle>
+                                    </div>
+                                </div>
+                                <div class="notifications-wrapper">
+                                    <div class="parameters-wrapper">
+                                        <div class="parameter-wrapper">
+                                            <div
+                                                class="input-wrapper"
+                                                [class.isDisabled]="!isAutofixEnabled || !status"
+                                            >
+                                                <mat-form-field appearance="outline">
+                                                    <mat-label>Duration</mat-label>
+                                                    <input
+                                                        autocomplete="off"
+                                                        matInput
+                                                        name="waitingTime"
+                                                        [(ngModel)]="waitingTime"
+                                                    />
+                                                </mat-form-field>
+                                                <div class="info-img">
+                                                    <img
+                                                        src="assets/icons/info-circle.svg"
+                                                        [matTooltip]=""
+                                                        matTooltipPosition="right"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                     </div>
-                                  <div class="autofix-wrapper">
-                                    <app-dropdown [items]="accountList" placeholder="Accounts" [isChipListEnabled]="true" [class.isDisabled]="!status || !isAutofixEnabled"
-                                    [selectedList]="selectedAccounts" (selected)="onAccountsChange($event)"></app-dropdown>
-                                    <div class="header">
-                                        <span class="subtitle-2">Warning Notification</span>
-                                        <div class="status-wrapper">
-                                          <span class="body-1">Enabled</span>
-                                          <mat-slide-toggle  [disabled]="!isAutofixEnabled || !status" [checked]="warningNotification" (change)="toggleWarningNotification($event)"></mat-slide-toggle>
+                                        <div class="parameter-wrapper">
+                                            <div
+                                                class="input-wrapper"
+                                                [class.isDisabled]="
+                                                    !isAutofixEnabled ||
+                                                    !warningNotification ||
+                                                    !status
+                                                "
+                                            >
+                                                <mat-form-field appearance="outline">
+                                                    <mat-label>Count</mat-label>
+                                                    <input
+                                                        autocomplete="off"
+                                                        matInput
+                                                        name="maxEmailNotification"
+                                                        [class.hideInput]="warningNotification"
+                                                        [(ngModel)]="maxEmailNotification"
+                                                    />
+                                                </mat-form-field>
+                                                <div class="info-img">
+                                                    <img
+                                                        src="assets/icons/info-circle.svg"
+                                                        [matTooltip]=""
+                                                        matTooltipPosition="right"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                      </div>
-                                     <div class="notifications-wrapper">
-                                            <div class="parameters-wrapper">
-                                                <div class="parameter-wrapper">
-                                                    <div class="input-wrapper" [class.isDisabled]="!isAutofixEnabled || !status">
-                                                        <mat-form-field appearance="outline">
-                                                            <mat-label>Duration</mat-label>
-                                                            <input autocomplete="off" matInput name="waitingTime" 
-                                                                [(ngModel)]="waitingTime">
-                                                        </mat-form-field>
-                                                        <div class="info-img">
-                                                            <img src="../../../assets/icons/info-circle.svg" [matTooltip]="" matTooltipPosition="right">
-                                                        </div>
-                                                    </div>
-                                                    </div>
-                                                    <div class="parameter-wrapper">
-                                                    <div class="input-wrapper"  [class.isDisabled]="!isAutofixEnabled || !warningNotification || !status">
-                                                        <mat-form-field appearance="outline">
-                                                            <mat-label>Count</mat-label>
-                                                            <input autocomplete="off" matInput name="maxEmailNotification" [class.hideInput]="warningNotification"
-                                                             [(ngModel)]="maxEmailNotification">
-                                                        </mat-form-field>
-                                                        <div class="info-img">
-                                                            <img src="../../../assets/icons/info-circle.svg" [matTooltip]="" matTooltipPosition="right">
-                                                        </div>
-                                                    </div>
-                                                 </div>
-                                              </div>
-                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </form>
             </div>
             <div class="details-footer">
                 <div class="button-wrapper">
-                    <button class="button cancel-btn" 
-                        (click)="onReset()">Cancel</button>
-                    <button class="button submit-btn" 
-                        (click)="onSubmit()">Update</button>
+                    <button class="button cancel-btn" (click)="onReset()">Cancel</button>
+                    <button class="button submit-btn" (click)="onSubmit()">Update</button>
                 </div>
             </div>
+        </div>
     </div>
 </div>
