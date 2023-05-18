@@ -684,7 +684,14 @@ export class CreateEditPolicyComponent implements OnInit, OnDestroy {
             return;
         }
         this.dialog
-            .open(DisabledReasonModalComponent, {
+            .open<
+                DisabledReasonModalComponent,
+                void,
+                {
+                    reason: string;
+                    expiryDate: Date;
+                }
+            >(DisabledReasonModalComponent, {
                 scrollStrategy: this.overlay.scrollStrategies.noop(),
                 minWidth: 420,
             })

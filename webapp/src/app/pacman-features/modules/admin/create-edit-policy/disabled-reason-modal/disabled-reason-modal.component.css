@@ -15,7 +15,6 @@
     align-self: flex-start;
 }
 
-
 .disabled-reason-actions .dra-closebtn {
     border: 1px solid var(--primary-400);
     background-color: var(--background-white);
@@ -40,3 +39,11 @@
     cursor: pointer;
 }
 
+.disabled-reason-actions .dra-disablebtn:disabled {
+    background-color: rgba(0 0 0 / 12%);;
+    color: rgba(0 0 0 / 38%);
+}
+
+.disabled-reason-actions .dra-disablebtn:disabled:hover {
+    cursor: default;
+}
