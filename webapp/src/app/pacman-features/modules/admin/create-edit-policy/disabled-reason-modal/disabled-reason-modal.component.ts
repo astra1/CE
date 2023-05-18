@@ -1,5 +1,5 @@
-import { DialogRef } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-disabled-reason-modal',
@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./disabled-reason-modal.component.css'],
 })
 export class DisabledReasonModalComponent implements OnInit {
-    constructor(private dialogRef: DialogRef) {}
+    constructor(private dialogRef: MatDialogRef<DisabledReasonModalComponent>) {}
 
     ngOnInit(): void {}
 
