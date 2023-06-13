@@ -82,7 +82,8 @@
          url: '',
          region: '',
          apiKey: '',
-       }
+       },
+       clarity: '',
      }
    }
  };
