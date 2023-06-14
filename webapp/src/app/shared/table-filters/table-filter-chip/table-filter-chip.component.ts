@@ -61,10 +61,7 @@ export class TableFilterChipComponent implements OnInit {
     ngOnInit(): void {}
 
     toggleOptionsMenu() {
-        if (this.isOptionsMenuOpen) {
-            return;
-        }
-        this.isOptionsMenuOpen = true;
+        this.isOptionsMenuOpen = !this.isOptionsMenuOpen;
     }
 
     updateFilterOption(filterName: string, filterValue: boolean) {

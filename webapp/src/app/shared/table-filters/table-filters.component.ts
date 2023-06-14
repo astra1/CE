@@ -1,4 +1,12 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+} from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import merge from 'lodash/merge';
 import { FilterItem } from '../table/table.component';
@@ -101,10 +109,7 @@ export class TableFiltersComponent implements OnInit {
 
     openMenu() {
         this.isCategoryOptionsMenuOpen = false;
-        if (this.isCategoryMenuOpen) {
-            return;
-        }
-        this.isCategoryMenuOpen = true;
+        this.isCategoryMenuOpen = !this.isCategoryMenuOpen;
     }
 
     overlayOutsideClick(event: MouseEvent) {
