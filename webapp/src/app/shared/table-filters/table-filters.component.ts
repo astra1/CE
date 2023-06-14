@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import merge from 'lodash/merge';
 import { FilterItem } from '../table/table.component';
 import { FilterChipUpdateEvent } from './table-filter-chip/table-filter-chip.component';
+import { tableFilterAnimation } from './table-filter.animation';
 
 interface AppliedFilter {
     [categoryName: string]: {
@@ -20,6 +21,7 @@ export interface OptionChange {
     selector: 'app-table-filters',
     templateUrl: './table-filters.component.html',
     styleUrls: ['./table-filters.component.css'],
+    animations: [tableFilterAnimation],
 })
 export class TableFiltersComponent implements OnInit {
     @Input() set appliedFilters(filters) {
@@ -75,6 +77,8 @@ export class TableFiltersComponent implements OnInit {
     @Output() categoryClear = new EventEmitter<string>();
     @Output() optionChange = new EventEmitter<OptionChange>();
 
+    @ViewChild('filterBtn') filterBtn: ElementRef<HTMLButtonElement>;
+
     readonly filterMenuOffsetY = 7;
     readonly maxOptionChars = 30;
 
@@ -96,8 +100,20 @@ export class TableFiltersComponent implements OnInit {
     ngOnInit(): void {}
 
     openMenu() {
-        this.isCategoryMenuOpen = !this.isCategoryMenuOpen;
         this.isCategoryOptionsMenuOpen = false;
+        if (this.isCategoryMenuOpen) {
+            return;
+        }
+        this.isCategoryMenuOpen = true;
+    }
+
+    overlayOutsideClick(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        const filterBtn = this.filterBtn.nativeElement;
+        if (target === filterBtn || target.parentElement === filterBtn) {
+            return;
+        }
+        this.isCategoryMenuOpen = false;
     }
 
     openFilterCategory(filterCategory: string) {

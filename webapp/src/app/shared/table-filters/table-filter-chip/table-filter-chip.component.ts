@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+} from '@angular/core';
+import { tableFilterAnimation } from '../table-filter.animation';
 
 export interface FilterChipUpdateEvent {
     category: string;
@@ -10,6 +19,7 @@ export interface FilterChipUpdateEvent {
     selector: 'app-table-filter-chip',
     templateUrl: './table-filter-chip.component.html',
     styleUrls: ['./table-filter-chip.component.css'],
+    animations: [tableFilterAnimation],
 })
 export class TableFilterChipComponent implements OnInit {
     @Input() category: string;
@@ -34,6 +44,8 @@ export class TableFilterChipComponent implements OnInit {
     @Output() clear = new EventEmitter<string>();
     @Output() update = new EventEmitter<FilterChipUpdateEvent>();
 
+    @ViewChild('filterChip') filterChip: ElementRef<HTMLDivElement>;
+
     readonly optionsMenuOffsetY = 7;
     readonly maxOptionChars = 30;
 
@@ -49,7 +61,10 @@ export class TableFilterChipComponent implements OnInit {
     ngOnInit(): void {}
 
     toggleOptionsMenu() {
-        this.isOptionsMenuOpen = !this.isOptionsMenuOpen;
+        if (this.isOptionsMenuOpen) {
+            return;
+        }
+        this.isOptionsMenuOpen = true;
     }
 
     updateFilterOption(filterName: string, filterValue: boolean) {
@@ -64,6 +79,15 @@ export class TableFilterChipComponent implements OnInit {
         if (event.key === 'Escape') {
             this.isOptionsMenuOpen = false;
         }
+    }
+
+    overlayOutsideClick(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        const filterChip = this.filterChip.nativeElement;
+        if (target === filterChip || target.parentElement === filterChip) {
+            return;
+        }
+        this.isOptionsMenuOpen = false;
     }
 
     filterOptionsByQuery() {

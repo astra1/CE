@@ -9,6 +9,7 @@
     ></app-table-filter-chip>
 
     <button
+        #filterBtn
         type="button"
         class="filters-menu-btn flex flex-align-center"
         (click)="openMenu()"
@@ -24,11 +25,11 @@
     cdkConnectedOverlay
     [cdkConnectedOverlayOrigin]="menuTrigger"
     [cdkConnectedOverlayOpen]="isCategoryMenuOpen"
-    (overlayOutsideClick)="isCategoryMenuOpen = false"
+    (overlayOutsideClick)="overlayOutsideClick($event)"
     (overlayKeydown)="overlayKeyDown($event)"
     [cdkConnectedOverlayOffsetY]="filterMenuOffsetY"
 >
-    <div class="filters-menu-container flex flex-col">
+    <div class="filters-menu-container flex flex-col" [@fade]>
         <ng-container *ngIf="!isCategoryOptionsMenuOpen">
             <app-table-filter-search [(text)]="categoryFilterQuery"></app-table-filter-search>
             <ul class="filters-category-menu">
